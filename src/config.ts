@@ -14,7 +14,7 @@ export const baseEnvSchema = z.object({
 export type BaseConfig = z.infer<typeof baseEnvSchema>;
 
 // 각 봇은 baseEnvSchema.extend({...})로 자기 필드(DATABASE_URL 등)를 얹어서 넘긴다.
-export function loadConfig<Schema extends z.ZodType<BaseConfig>>(
+export function loadConfig<Schema extends z.ZodType<BaseConfig, z.ZodTypeDef, any>>(
   schema: Schema
 ): z.infer<Schema> {
   const parsed = schema.parse(process.env);

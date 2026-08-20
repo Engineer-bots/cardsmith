@@ -1,0 +1,7 @@
+services:
+  bot:
+    image: igor0670/cardsmith:latest
+    container_name: cardsmith-bot
+    env_file:
+      - .env
+    restart: unless-stopped
