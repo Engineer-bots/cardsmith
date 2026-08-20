@@ -51,13 +51,16 @@ Manage Messages 권한이 없으면 임베드는 정상 전송되지만 원본 �
 
 `v*.*.*` 형식의 태그를 푸시하면 `.github/workflows/docker-publish.yml`이 실행되어
 [Docker Hub(igor0670/cardsmith)](https://hub.docker.com/repository/docker/igor0670/cardsmith/tags)에
-`<버전>`/`latest` 태그로 이미지를 배포하고, `docker-compose.yml`·`.env.example`을 첨부하고
+`<버전>`/`latest` 태그로 이미지를 배포하고, `docker-compose.yml`·`env.example`을 첨부하고
 `CHANGELOG.md`에서 해당 버전 항목을 추출해 릴리즈 노트로 담은 GitHub Release를 생성한다.
 저장소 시크릿으로 `DOCKER_USERNAME`, `DOCKER_TOKEN`(Docker Hub Access Token)이 필요하다.
+
+(Release 첨부파일명은 `env.example`이다 — GitHub Release가 마침표로 시작하는 파일명을
+`default.<name>`으로 바꿔버려서, 저장소의 `.env.example`을 마침표 없이 복사해 올린다.)
 
 운영 서버에서 실행하려면 Release에서 두 파일을 받아:
 
 ```bash
-cp .env.example .env   # 값 채우기
-docker compose up -d   # Docker Hub에서 이미지를 받아 실행
+cp env.example .env   # 값 채우기
+docker compose up -d  # Docker Hub에서 이미지를 받아 실행
 ```
