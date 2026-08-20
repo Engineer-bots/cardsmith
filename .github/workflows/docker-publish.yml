@@ -63,7 +63,12 @@ jobs:
         id: changelog
         run: |
           VERSION=${{ steps.version.outputs.version }}
-          sed -n "/## \[${VERSION#v}\]/,/## \[/p" CHANGELOG.md | sed '$d' > release-notes.md
+          # 해당 버전 제목 다음 줄부터, 다음 "## [" 제목 전까지만 추출한다.
+          # (CHANGELOG에 이전 버전 항목이 없어도 마지막 줄이 잘리지 않도록 sed '$d' 대신 awk 사용)
+          awk -v ver="${VERSION#v}" '
+            /^## \[/ { if (found) exit; if (index($0, "[" ver "]")) { found=1; next } }
+            found { print }
+          ' CHANGELOG.md > release-notes.md
           if [ ! -s release-notes.md ]; then
             echo "Release $VERSION" > release-notes.md
           fi
