@@ -1,0 +1,27 @@
+{
+  "name": "cardsmith",
+  "version": "26.1.0",
+  "description": "링크를 임베드로 변환해주는 Discord 봇 (bot-core 기반)",
+  "license": "MIT",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=20.18.1"
+  },
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc --project tsconfig.json",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.27.0",
+    "dotenv": "^16.4.5",
+    "pino": "^8.19.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "tsx": "^4.23.12",
+    "typescript": "^5.4.5"
+  }
+}
