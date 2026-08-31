@@ -25,7 +25,7 @@ const MAX_EMBED_IMAGE_BYTES = 8 * 1024 * 1024;
 const previewCache = new TTLCache<IgPreview>(5 * 60_000);
 
 export class IgUnavailableError extends Error {
-  constructor(public reason: "transient" | "no_media") {
+  constructor(public reason: "transient" | "no_media" | "geoblocked") {
     super(reason);
   }
 }
@@ -60,6 +60,12 @@ export async function fetchPreview(
     throw new IgUnavailableError("no_media");
   }
   if (!res.ok) {
+    // 400 + geoblock_required/gating 은 재시도로 풀리지 않는 영구 차단이다.
+    const body = await res.text().catch(() => "");
+    if (/geoblock|gating_type/i.test(body)) {
+      logger.warn({ shortcode, status: res.status }, "Instagram oEmbed content is geo/audience blocked");
+      throw new IgUnavailableError("geoblocked");
+    }
     logger.warn({ shortcode, status: res.status }, "Instagram oEmbed request failed");
     throw new IgUnavailableError("transient");
   }
@@ -198,10 +204,14 @@ const igEmbedModule: BotModule = {
       } catch (err) {
         logger.warn({ err, content }, "Failed to fetch Instagram preview");
 
-        const isTransient = !(err instanceof IgUnavailableError) || err.reason === "transient";
-        const reason = isTransient
-          ? "일시적으로 미리보기를 가져오지 못했어요. 잠시 후 다시 시도해주세요."
-          : "비공개 계정, 삭제된 게시물, 또는 로그인·연령 확인이 필요한 게시물이라 미리보기를 가져올 수 없어요.";
+        const igReason = err instanceof IgUnavailableError ? err.reason : "transient";
+        const isTransient = igReason === "transient";
+        const reason =
+          igReason === "geoblocked"
+            ? "인스타그램이 로그인·연령 확인이 필요한 제한된 게시물로 분류해서 미리보기를 가져올 수 없어요."
+            : igReason === "no_media"
+              ? "비공개 계정, 삭제된 게시물, 또는 로그인·연령 확인이 필요한 게시물이라 미리보기를 가져올 수 없어요."
+              : "일시적으로 미리보기를 가져오지 못했어요. 잠시 후 다시 시도해주세요.";
 
         const fallback = new EmbedBuilder()
           .setAuthor({
