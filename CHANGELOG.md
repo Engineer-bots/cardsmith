@@ -1,5 +1,10 @@
 # Changelog
 
+## [26.1.3] - 2026-10-23
+
+### Fixed
+- `undici` 보안 패치 반영 (`6.28.0` → `6.29.1`, cheerio 의존 `7.29.0` → `7.30.1`) — GitHub Advisory의 high 등급 취약점(TLS 인증서 검증 우회 GHSA-w293-vg96-wgc3, 압축 응답 무제한 해제 DoS GHSA-3xpg-4rpp-hhhm 등) 대응. lockfile만 갱신, 기능 변경 없음
+
 ## [26.1.2] - 2026-10-23
 
 ### Changed

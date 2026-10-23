@@ -1,6 +1,6 @@
 {
   "name": "cardsmith",
-  "version": "26.1.2",
+  "version": "26.1.3",
   "description": "링크를 임베드로 변환해주는 Discord 봇 (bot-core 기반)",
   "license": "MIT",
   "type": "module",
