@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:22.23.4-alpine AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json tsconfig.json ./
@@ -7,7 +7,7 @@ RUN npm ci
 COPY src ./src
 RUN npm run build
 
-FROM node:20-alpine AS runner
+FROM node:22.23.4-alpine AS runner
 ARG VERSION=latest
 LABEL org.opencontainers.image.version="${VERSION}"
 ENV NODE_ENV=production
